@@ -1,0 +1,134 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const intro = document.getElementById("intro");
+    const cinema = document.getElementById("cinema");
+    const player = document.getElementById("player");
+    const video = document.getElementById("video");
+    const closePlayer = document.querySelector(".close-player");
+    const movieCards = document.querySelectorAll(".movie-card");
+
+
+    /* =========================
+       CINEMATIC INTRO
+    ========================= */
+
+    setTimeout(() => {
+        if (intro) {
+            intro.classList.add("hidden");
+        }
+
+        if (cinema) {
+            cinema.style.opacity = "1";
+        }
+    }, 4000);
+
+
+    /* =========================
+       MOVIE CARD CLICK
+    ========================= */
+
+    movieCards.forEach((card) => {
+
+        card.addEventListener("click", () => {
+
+            const movieFile = card.dataset.video;
+
+            if (!movieFile) {
+                return;
+            }
+
+            if (video) {
+                video.src = movieFile;
+                video.currentTime = 0;
+            }
+
+            if (player) {
+                player.classList.add("active");
+            }
+
+            document.body.style.overflow = "hidden";
+
+            if (video) {
+                video.play().catch(() => {
+                    console.log("Video playback requires user interaction.");
+                });
+            }
+        });
+
+    });
+
+
+    /* =========================
+       CLOSE VIDEO PLAYER
+    ========================= */
+
+    function closeVideo() {
+
+        if (video) {
+            video.pause();
+            video.currentTime = 0;
+            video.removeAttribute("src");
+            video.load();
+        }
+
+        if (player) {
+            player.classList.remove("active");
+        }
+
+        document.body.style.overflow = "";
+    }
+
+
+    if (closePlayer) {
+        closePlayer.addEventListener("click", closeVideo);
+    }
+
+
+    /* =========================
+       ESCAPE KEY
+    ========================= */
+
+    document.addEventListener("keydown", (event) => {
+
+        if (event.key === "Escape") {
+            closeVideo();
+        }
+
+    });
+
+
+    /* =========================
+       PREVENT VIDEO FROM
+       CLOSING WHEN CLICKED
+    ========================= */
+
+    if (video) {
+
+        video.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+
+    }
+
+
+    /* =========================
+       PLAYER BACKGROUND CLICK
+    ========================= */
+
+    if (player) {
+
+        player.addEventListener("click", (event) => {
+
+            if (event.target === player) {
+                closeVideo();
+            }
+
+        });
+
+    }
+
+});
